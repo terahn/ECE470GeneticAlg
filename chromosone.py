@@ -15,5 +15,13 @@ class Chromosone:
         arr = []
         for i in range(num_mediums):
             arr.append(random.randint(0, 1))
+
+
         self.array = arr
-        print(arr)
+        self.fitness = 0
+        #print(arr)
+    
+    def setFitness(self, fit_val):
+        '''Sets the fitness for the chromosone'''
+        self.fitness = fit_val
+
