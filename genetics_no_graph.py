@@ -7,7 +7,7 @@
 from chromosome import Chromosome
 from advertisement import Advertisement
 
-import random, time, matplotlib.pyplot as plt
+import random, time
 # Project variables
 
 pop_size = 100
@@ -106,14 +106,6 @@ for i in range(pop_size):
 start_time = time.time()
 elapsed_time = 0
 
-# initialize graph
-plt.xlabel('Time (seconds)')
-plt.ylabel('Fitness')
-plt.title('Chromosome Fitness Over Time')
-plt.ylim(0, 0.40)
-x = []
-y = []
-
 best_chromosome = []
 best_chromosome_fitness = 0
 
@@ -144,15 +136,12 @@ while(elapsed_time < 20):
 
     avg_fitness = sum / float(pop_size)
 
-    y.append(avg_fitness)
-
     print("Average population fitness is {0} with a max fitness of {1}").format(avg_fitness, max)
 
 
     if avg_fitness >= 0.29:
         elapsed_time = time.time() - start_time
         print("Elapsed Time: {0}").format(elapsed_time)
-        x.append(elapsed_time)
         break
 
     # obtain a new population
@@ -172,7 +161,6 @@ while(elapsed_time < 20):
 
     elapsed_time = time.time() - start_time
     print("Elapsed Time: {0}").format(elapsed_time)
-    x.append(elapsed_time)
 
 print("The chromosome with the highest fitness is {0} with a score of {1}").format(best_chromosome, best_chromosome_fitness)
 
@@ -189,6 +177,3 @@ print("Which uses ${0} out of ${1} budget").format(total_cost, budget)
 
 for i in range(len(advertisements)):
     print("\n{0}\nCost: {1}\nReach: {2}\nImpact: {3}\n").format(advertisements[i].name, advertisements[i].cost, advertisements[i].reach, advertisements[i].impact)
-
-plt.plot(x, y, 'ro')
-plt.show()
