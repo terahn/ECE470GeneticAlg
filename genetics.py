@@ -11,76 +11,8 @@ import random, time, matplotlib.pyplot as plt, numpy as np
 # Project variables
 
 pop_size = 100
-mutation_rate = 0.005
+mutation_rate = 0.0025
 budget = 2500000
-
-# Project methods
-
-def fitness(advertisements, chromosome):
-    '''Calculates the fitness for a certain chromosome'''
-
-    cost = 0.0000
-    reach = 0.0000
-    impact = 0.0000
-
-    for i in range(len(advertisements)):
-        if chromosome.array[i] == 1:
-            cost = cost + advertisements[i].cost
-            reach = reach + advertisements[i].reach
-            impact = impact + advertisements[i].impact
-
-    if cost <= budget and cost > 0:
-        fitness = (1 - (cost / reach)) * (impact / (len(advertisements) * 10)) * (cost / budget) # NEED TO FACTOR IN BUDGET AS WELL
-    else:
-        fitness = 0
-    
-    #print(fitness)
-
-    return fitness
-
-def crossover(c1, c2):
-    '''Takes as input 2 chromosomes and returns a new chromosome which is a mix of the first 2'''
-    c_new = Chromosome(len(advertisements))
-    for i in range(len(advertisements)):
-        if i % 2 == 0:
-            c_new.array[i] = c1.array[i]
-        else:
-            c_new.array[i] = c2.array[i]
-    #print(c_new.array)
-    return c_new
-
-def naturalSelection(population):
-    '''Pick a random chromosome based on its fitness'''
-
-    # normalize fitness values
-    sum = 0;
-    for i in range(pop_size):
-        sum = sum + population[i].fitness
-
-    if sum == 0:
-        return population[random.randint(0, pop_size - 1)]
-        
-    for i in range(pop_size):
-        population[i].score = population[i].fitness / sum
-        #print("{0} with fitness {1} and score {2}").format(population[i].array, population[i].fitness, population[i].score)
-
-    index = 0
-
-    # random number between 0.0 and 1.0
-    r = random.random()
-
-    # subtracts score values until you get a negative number
-    while r > 0:
-        r = r - population[index].score
-        index = index + 1
-    
-    index = index - 1 # cancels out last index + 1
-
-    #print("Chose: {0} with fitness {1} and score {2}").format(population[index].array, population[index].fitness, population[index].score)
-    return population[index]
-
-# Main Algorithm
-population = []
 
 advertisements = [
                     Advertisement("National TV (Canada)", 1000000, 40000000, 5), 
@@ -102,6 +34,70 @@ advertisements = [
                     Advertisement("Swag", 7700, 10000, 10)
                 ]
 
+# Project methods
+
+def fitness(advertisements, chromosome):
+    '''Calculates the fitness for a certain chromosome'''
+
+    cost = 0.0000
+    reach = 0.0000
+    impact = 0.0000
+
+    for i in range(len(advertisements)):
+        if chromosome.array[i] == 1:
+            cost = cost + advertisements[i].cost
+            reach = reach + advertisements[i].reach
+            impact = impact + advertisements[i].impact
+
+    if cost <= budget and cost > 0:
+        fitness = (1 - (cost / reach)) * (impact / (len(advertisements) * 10)) * (cost / budget)
+    else:
+        fitness = 0
+    
+    
+    return fitness
+
+def crossover(c1, c2):
+    '''Takes as input 2 chromosomes and returns a new chromosome which is a mix of the first 2'''
+    c_new = Chromosome(len(advertisements))
+    for i in range(len(advertisements)):
+        if i % 2 == 0:
+            c_new.array[i] = c1.array[i]
+        else:
+            c_new.array[i] = c2.array[i]
+    return c_new
+
+def naturalSelection(population):
+    '''Pick a random chromosome based on its fitness'''
+
+    # normalize fitness values
+    sum = 0;
+    for i in range(pop_size):
+        sum = sum + population[i].fitness
+
+    if sum == 0:
+        return population[random.randint(0, pop_size - 1)]
+        
+    for i in range(pop_size):
+        population[i].score = population[i].fitness / sum
+        
+    index = 0
+
+    # random number between 0.0 and 1.0
+    r = random.random()
+
+    # subtracts score values until you get a negative number
+    while r > 0:
+        r = r - population[index].score
+        index = index + 1
+    
+    index = index - 1 # cancels out last index + 1
+
+    return population[index]
+
+# Main Algorithm
+population = []
+
 for i in range(pop_size):
     population.append(Chromosome(len(advertisements)))
 
@@ -110,6 +106,7 @@ for i in range(pop_size):
 start_time = time.time()
 elapsed_time = 0
 
+# initialize graph
 plt.xlabel('Time (seconds)')
 plt.ylabel('Fitness')
 plt.title('Chromosome Fitness Over Time')
@@ -122,7 +119,7 @@ best_chromosome_fitness = 0
 
 avg_fitness = 0
 
-while(elapsed_time < 30):
+while(elapsed_time < 20):
     # calculate fitness for all chromosomes
     for i in range(pop_size):
         fit_num = fitness(advertisements, population[i])
@@ -151,10 +148,10 @@ while(elapsed_time < 30):
 
     print("Average population fitness is {0} with a max fitness of {1}").format(avg_fitness, max)
 
+
     if avg_fitness >= 0.29:
         elapsed_time = time.time() - start_time
         print("Elapsed Time: {0}").format(elapsed_time)
-        print('BREAK')
         x.append(elapsed_time)
         break
 
@@ -173,7 +170,6 @@ while(elapsed_time < 30):
     else:
         print("Error! New population size is not the same as the last one")
 
-    #print(population[0].array)
     elapsed_time = time.time() - start_time
     print("Elapsed Time: {0}").format(elapsed_time)
     x.append(elapsed_time)
@@ -190,6 +186,9 @@ for i in range(len(best_chromosome)):
         print(advertisements[i].name)
 
 print("Which uses ${0} out of ${1} budget").format(total_cost, budget)
+
+for i in range(len(advertisements)):
+    print("\n{0}\nCost: {1}\nReach: {2}\nImpact: {3}\n").format(advertisements[i].name, advertisements[i].cost, advertisements[i].reach, advertisements[i].impact)
 
 plt.plot(x, y, 'ro')
 plt.show()

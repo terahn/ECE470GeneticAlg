@@ -35,7 +35,6 @@ class Chromosome:
         '''Mutates the chromosome every so often according to the mutation rate'''
         for i in range(len(self.array)):
             if random.random() < mutation_rate:
-                #print("MUTATE")
                 if self.array[i] == 0:
                     self.array[i] = 1
                 else:
